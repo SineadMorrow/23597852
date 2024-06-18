@@ -1,0 +1,552 @@
+\documentclass[11pt,preprint]{elsarticle}
+
+\usepackage{lmodern}
+%%%% My spacing
+\usepackage{setspace}
+\setstretch{1.2}
+\DeclareMathSizes{12}{14}{10}{10}
+
+% Wrap around which gives all figures included the [H] command, or places it "here". This can be tedious to code in Rmarkdown.
+\usepackage{float}
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[H]
+} {
+    \endorigfigure
+}
+
+\let\origtable\table
+\let\endorigtable\endtable
+\renewenvironment{table}[1][2] {
+    \expandafter\origtable\expandafter[H]
+} {
+    \endorigtable
+}
+
+
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+
+\usepackage{amssymb, amsmath, amsthm, amsfonts}
+
+\def\bibsection{\section*{References}} %%% Make "References" appear before bibliography
+
+
+\usepackage[numbers]{natbib}
+
+\usepackage{longtable}
+\usepackage[margin=2.3cm,bottom=2cm,top=2.5cm, includefoot]{geometry}
+\usepackage{fancyhdr}
+\usepackage[bottom, hang, flushmargin]{footmisc}
+\usepackage{graphicx}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1.3ex plus 0.5ex minus 0.3ex}
+\usepackage{textcomp}
+\renewcommand{\headrulewidth}{0.2pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\usepackage{array}
+\newcolumntype{x}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
+
+%%%%  Remove the "preprint submitted to" part. Don't worry about this either, it just looks better without it:
+\makeatletter
+\def\ps@pprintTitle{%
+  \let\@oddhead\@empty
+  \let\@evenhead\@empty
+  \let\@oddfoot\@empty
+  \let\@evenfoot\@oddfoot
+}
+\makeatother
+
+ \def\tightlist{} % This allows for subbullets!
+
+\usepackage{hyperref}
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=blue,
+            pdfborder={0 0 0}}
+
+
+% The following packages allow huxtable to work:
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{calc}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{caption}
+
+
+\newenvironment{columns}[1][]{}{}
+
+\newenvironment{column}[1]{\begin{minipage}{#1}\ignorespaces}{%
+\end{minipage}
+\ifhmode\unskip\fi
+\aftergroup\useignorespacesandallpars}
+
+\def\useignorespacesandallpars#1\ignorespaces\fi{%
+#1\fi\ignorespacesandallpars}
+
+\makeatletter
+\def\ignorespacesandallpars{%
+  \@ifnextchar\par
+    {\expandafter\ignorespacesandallpars\@gobble}%
+    {}%
+}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+\begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+% allow citations to break across lines
+\let\@cite@ofmt\@firstofone
+% avoid brackets around text for \cite:
+\def\@biblabel#1{}
+\def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+{\begin{list}{}{%
+	\setlength{\itemindent}{0pt}
+	\setlength{\leftmargin}{0pt}
+	\setlength{\parsep}{0pt}
+	% turn on hanging indent if param 1 is 1
+	\ifodd #1
+	\setlength{\leftmargin}{\cslhangindent}
+	\setlength{\itemindent}{-1\cslhangindent}
+	\fi
+	% set entry spacing
+	\setlength{\itemsep}{#2\baselineskip}}}
+{\end{list}}
+
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{5}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+%%% Include extra packages specified by user
+
+%%% Hard setting column skips for reports - this ensures greater consistency and control over the length settings in the document.
+%% page layout
+%% paragraphs
+\setlength{\baselineskip}{12pt plus 0pt minus 0pt}
+\setlength{\parskip}{12pt plus 0pt minus 0pt}
+\setlength{\parindent}{0pt plus 0pt minus 0pt}
+%% floats
+\setlength{\floatsep}{12pt plus 0 pt minus 0pt}
+\setlength{\textfloatsep}{20pt plus 0pt minus 0pt}
+\setlength{\intextsep}{14pt plus 0pt minus 0pt}
+\setlength{\dbltextfloatsep}{20pt plus 0pt minus 0pt}
+\setlength{\dblfloatsep}{14pt plus 0pt minus 0pt}
+%% maths
+\setlength{\abovedisplayskip}{12pt plus 0pt minus 0pt}
+\setlength{\belowdisplayskip}{12pt plus 0pt minus 0pt}
+%% lists
+\setlength{\topsep}{10pt plus 0pt minus 0pt}
+\setlength{\partopsep}{3pt plus 0pt minus 0pt}
+\setlength{\itemsep}{5pt plus 0pt minus 0pt}
+\setlength{\labelsep}{8mm plus 0mm minus 0mm}
+\setlength{\parsep}{\the\parskip}
+\setlength{\listparindent}{\the\parindent}
+%% verbatim
+\setlength{\fboxsep}{5pt plus 0pt minus 0pt}
+
+
+
+\begin{document}
+
+
+
+\begin{frontmatter}  %
+
+\title{Unveiling Trends in US Baby Names for Toy Character Inspiration}
+
+% Set to FALSE if wanting to remove title (for submission)
+
+
+
+
+\author[Add1]{Sinead Morrow\footnote{\textbf{Contributions:}
+  \newline \emph{The authors would like to thank no institution for
+  money donated to this project. Thank you sincerely.}}}
+\ead{23597852@sun.ac.za}
+
+
+
+
+
+\address[Add1]{Stellenbosch University, Stellenbosch, South Africa}
+
+\cortext[cor]{Corresponding author: Sinead Morrow\footnote{\textbf{Contributions:}
+  \newline \emph{The authors would like to thank no institution for
+  money donated to this project. Thank you sincerely.}}}
+
+\begin{abstract}
+\small{
+Abstract to be written here. The abstract should not be too long and
+should provide the reader with a good understanding what you are writing
+about. Academic papers are not like novels where you keep the reader in
+suspense. To be effective in getting others to read your paper, be as
+open and concise about your findings here as possible. Ideally, upon
+reading your abstract, the reader should feel he / she must read your
+paper in entirety.
+}
+\end{abstract}
+
+\vspace{1cm}
+
+
+
+
+
+\vspace{0.5cm}
+
+\end{frontmatter}
+
+\setcounter{footnote}{0}
+
+
+
+%________________________
+% Header and Footers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\chead{}
+\rhead{}
+\lfoot{}
+\rfoot{\footnotesize Page \thepage}
+\lhead{}
+%\rfoot{\footnotesize Page \thepage } % "e.g. Page 2"
+\cfoot{}
+
+%\setlength\headheight{30pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%________________________
+
+\headsep 35pt % So that header does not go over title
+
+
+
+
+\subsubsection{Loading in the data:}\label{loading-in-the-data}
+
+\begin{verbatim}
+## # A tibble: 10 x 19
+##    person_id id       name  character role  title type  description release_year
+##        <dbl> <chr>    <chr> <chr>     <chr> <chr> <chr> <chr>              <dbl>
+##  1    120559 tm54582  Geor~ Excelsior ACTOR The ~ MOVIE A magician~         1901
+##  2    120559 tm54582  Geor~ <NA>      DIRE~ The ~ MOVIE A magician~         1901
+##  3    120559 tm127045 Geor~ Professo~ ACTOR A Tr~ MOVIE Professor ~         1902
+##  4    120561 tm127045 Bleu~ Lady in ~ ACTOR A Tr~ MOVIE Professor ~         1902
+##  5    120563 tm127045 Vict~ Astronom~ ACTOR A Tr~ MOVIE Professor ~         1902
+##  6    120560 tm127045 Henr~ Captain ~ ACTOR A Tr~ MOVIE Professor ~         1902
+##  7    120562 tm127045 Brun~ Astronom~ ACTOR A Tr~ MOVIE Professor ~         1902
+##  8    120564 tm127045 Depi~ Astronom~ ACTOR A Tr~ MOVIE Professor ~         1902
+##  9    120566 tm127045 Farj~ Astronom~ ACTOR A Tr~ MOVIE Professor ~         1902
+## 10    120567 tm127045 Kelm  Astronom~ ACTOR A Tr~ MOVIE Professor ~         1902
+## # i 10 more variables: age_certification <chr>, runtime <dbl>, genres <chr>,
+## #   production_countries <chr>, seasons <dbl>, imdb_id <chr>, imdb_score <dbl>,
+## #   imdb_votes <dbl>, tmdb_popularity <dbl>, tmdb_score <dbl>
+\end{verbatim}
+
+\subsubsection{NOTE: population data not required
+here}\label{note-population-data-not-required-here}
+
+\section{\texorpdfstring{Introduction
+\label{Introduction}}{Introduction }}\label{introduction}
+
+References are to be made as follows: Fama \& French
+(\citeproc{ref-fama1997}{1997: 33}) and Grinold \& Kahn
+(\citeproc{ref-grinold2000}{2000}) Such authors could also be referenced
+in brackets (\citeproc{ref-grinold2000}{Grinold \& Kahn, 2000}) and
+together Grinold \& Kahn (\citeproc{ref-grinold2000}{2000}). Source the
+reference code from scholar.google.com by clicking on ``cite'\,' below
+article name. Then select BibTeX at the bottom of the Cite window, and
+proceed to copy and paste this code into your ref.bib file, located in
+the directory's Tex folder. Open this file in Rstudio for ease of
+management, else open it in your preferred Tex environment. Add and
+manage your article details here for simplicity - once saved, it will
+self-adjust in your paper.
+
+\begin{quote}
+I suggest renaming the top line after @article, as done in the template
+ref.bib file, to something more intuitive for you to remember. Do not
+change the rest of the code. Also, be mindful of the fact that bib
+references from google scholar may at times be incorrect. Reference
+Latex forums for correct bibtex notation.
+\end{quote}
+
+To reference a section, you have to set a label using
+``\textbackslash label'\,' in R, and then reference it in-text as
+e.g.~referencing a later section, Section \ref{Meth}.
+
+Writing in Rmarkdown is surprizingly easy - see
+\href{https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf}{this
+website} cheatsheet for a summary on writing Rmd writing tips.
+
+\section*{Data}\label{data}
+\addcontentsline{toc}{section}{Data}
+
+Notice how I used the curly brackets and dash to remove the numbering of
+the data section.
+
+Discussion of data should be thorough with a table of statistics and
+ideally a figure.
+
+In your tempalte folder, you will find a Data and a Code folder. In
+order to keep your data files neat, store all of them in your Data
+folder. Also, I strongly suggest keeping this Rmd file for writing and
+executing commands, not writing out long pieces of data-wrangling. In
+the example below, I simply create a ggplot template for scatter plot
+consistency. I suggest keeping all your data in a data folder.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Question1_files/figure-latex/Figure1-1} 
+
+}
+
+\caption{Caption Here \label{Figure1}}\label{fig:Figure1}
+\end{figure}
+
+To make your graphs look extra nice in latex world, you could use Tikz
+device. Replace dev - `png' with `tikz' in the chunk below. Notice this
+makes the build time longer and produces extra tex files - so if you are
+comfortable with this, set your device to Tikz and try it out:
+
+To reference the plot above, add a ``\textbackslash label'\,' after the
+caption in the chunk heading, as done above. Then reference the plot as
+such: As can be seen, Figures \ref{Figure1} and \ref{Figure2} are
+excellent, with Figure \ref{Figure2} being particularly aesthetically
+pleasing due to its device setting of Tikz. The nice thing now is that
+it correctly numbers all your figures (and sections or tables) and will
+update if it moves. The links are also dynamic.
+
+I very strongly suggest using ggplot2 (ideally in combination with
+dplyr) using the ggtheme package to change the themes of your figures.
+
+Also note the information that I have placed above the chunks in the
+code chunks for the figures. You can edit any of these easily - visit
+the Rmarkdown webpage for more information.
+
+\section{Splitting a page}\label{splitting-a-page}
+
+You can also very easily split a page using built-in Pandoc formatting.
+I comment this out in the code (as this has caused issues building the
+pdf for some users - which I presume to be a Pandoc issue), but you are
+welcome to try it out yourself by commenting out the following section
+in your Rmd file.
+
+\section{\texorpdfstring{Methodology
+\label{Meth}}{Methodology }}\label{methodology}
+
+\subsection{Subsection}\label{subsection}
+
+Ideally do not overuse subsections. It equates to bad
+writing.\footnote{This is an example of a footnote by the way. Something
+  that should also not be overused.}
+
+\subsection{Math section}\label{math-section}
+
+Equations should be written as such:
+
+\begin{align}
+\beta = \sum_{i = 1}^{\infty}\frac{\alpha^2}{\sigma_{t-1}^2} \label{eq1} \\
+\int_{x = 1}^{\infty}x_{i} = 1 \notag
+\end{align}
+
+If you would like to see the equations as you type in Rmarkdown, use \$
+symbols instead (see this for yourself by adjusted the equation):
+
+\[
+\beta = \sum_{i = 1}^{\infty}\frac{\alpha^2}{\sigma_{t-1}^2} \\
+\int_{x = 1}^{\infty}x_{i} = 1
+\]
+
+Note the equation above - this should appear in math in Rstudio. Writing
+nice math requires practice. Note I used a forward slashes to make a
+space in the equations. I can also align equations using \textbf{\&},
+and set to numbering only the first line. Now I will have to type
+``begin equation'\,' which is a native \LaTeX command. Here follows a
+more complicated equation that you want aligned (using \& sign) and
+numbered:
+
+\begin{align}
+    y_t &= c + B(L) y_{t-1} + e_t   \label{eq2}    \\ \notag
+    e_t &= H_t^{1/2}  z_t ; \quad z_t \sim  N(0,I_N) \quad \& \quad H_t = D_tR_tD_t \\ \notag
+        D_t^2 &= {\sigma_{1,t}, \dots, \sigma_{N,t}}   \\ \notag
+        \sigma_{i,t}^2 &= \gamma_i+\kappa_{i,t}  v_{i, t-1}^2 +\eta_i  \sigma_{i, t-1}^2, \quad \forall i \\ \notag
+        R_{t, i, j} &= {diag(Q_{t, i, j}}^{-1}) . Q_{t, i, j} . diag(Q_{t, i, j}^{-1})  \\ \notag
+        Q_{t, i, j} &= (1-\alpha-\beta)  \bar{Q} + \alpha  z_t  z_t'  + \beta  Q_{t, i, j} \notag
+\end{align}
+
+Note that in \ref{eq2} I have aligned the equations by the equal signs.
+I also want only one tag, and I create spaces using ``quads'\,'.
+
+See if you can figure out how to do complex math using the two examples
+provided in \ref{eq1} and \ref{eq2}.
+
+\section{Including an external plot}\label{including-an-external-plot}
+
+You can also include plots produced outside of your Rmarkdown file using
+the package \emph{knitr}
+
+See below chunk:
+
+\section{Results}\label{results}
+
+Tables can be included as follows. Use the \emph{xtable} (or kable)
+package for tables. Table placement = H implies Latex tries to place the
+table Here, and not on a new page (there are, however, very many ways to
+skin this cat. Luckily there are many forums online!).
+
+To reference calculations \textbf{in text}, \emph{do this:} From table
+\ref{tab1} we see the average value of mpg is 20.98.
+
+Including tables that span across pages, use the following (note that I
+add below the table: ``continue on the next page'\,'). This is a neat
+way of splitting your table across a page.
+
+Use the following default settings to build your own possibly long
+tables. Note that the following will fit on one page if it can, but
+cleanly spreads over multiple pages:
+
+\hfill
+
+\subsection{Huxtable}\label{huxtable}
+
+Huxtable is a very nice package for making working with tables between
+Rmarkdown and Tex easier.
+
+This cost some adjustment to the Tex templates to make it work, but it
+now works nicely.
+
+See documentation for this package
+\href{https://hughjonesd.github.io/huxtable/huxtable.html}{here}. A
+particularly nice addition of this package is for making the printing of
+regression results a joy (see
+\href{https://hughjonesd.github.io/huxtable/huxtable.html\#creating-a-regression-table}{here}).
+Here follows an example:
+
+If you are eager to use huxtable, comment out the Huxtable table in the
+Rmd template, and uncomment the colortbl package in your Rmd's root.
+
+Note that I do not include this in the ordinary template, as some latex
+users have complained it breaks when they build their Rmds (especially
+those using tidytex - I don't have this problem as I have the full
+Miktex installed on mine). Up to you, but I strongly recommend
+installing the package manually and using huxtable. To make this work,
+uncomment the \emph{Adding additional latex packages} part in yaml at
+the top of the Rmd file. Then comment out the huxtable example in the
+template below this line. Reknit, and enjoy.
+
+FYI - R also recently introduced the gt package, which is worthwhile
+exploring too.
+
+\section{Lists}\label{lists}
+
+To add lists, simply using the following notation
+
+\begin{itemize}
+\item
+  This is really simple
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Just note the spaces here - writing in R you have to sometimes be
+    pedantic about spaces\ldots{}
+  \end{itemize}
+\item
+  Note that Rmarkdown notation removes the pain of defining
+  \LaTeX environments!
+\end{itemize}
+
+\section{Conclusion}\label{conclusion}
+
+I hope you find this template useful. Remember, stackoverflow is your
+friend - use it to find answers to questions. Feel free to write me a
+mail if you have any questions regarding the use of this package. To
+cite this package, simply type citation(``Texevier'') in Rstudio to get
+the citation for Katzke (\citeproc{ref-Texevier}{2017}) (Note that
+uncited references in your bibtex file will not be included in
+References).
+
+\newpage
+
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{1}
+\bibitem[\citeproctext]{ref-fama1997}
+Fama, E.F. \& French, K.R. 1997. Industry costs of equity. \emph{Journal
+of financial economics}. 43(2):153--193.
+
+\bibitem[\citeproctext]{ref-grinold2000}
+Grinold, R.C. \& Kahn, R.N. 2000. Active portfolio management.
+
+\bibitem[\citeproctext]{ref-Texevier}
+Katzke, N.F. 2017. \emph{{Texevier}: {P}ackage to create elsevier
+templates for rmarkdown}. Stellenbosch, South Africa: Bureau for
+Economic Research.
+
+\end{CSLReferences}
+
+\section*{Appendix}\label{appendix}
+\addcontentsline{toc}{section}{Appendix}
+
+\subsection*{Appendix A}\label{appendix-a}
+\addcontentsline{toc}{subsection}{Appendix A}
+
+Some appendix information here
+
+\subsection*{Appendix B}\label{appendix-b}
+\addcontentsline{toc}{subsection}{Appendix B}
+
+\bibliography{Tex/ref}
+
+
+
+
+
+\end{document}

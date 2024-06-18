@@ -161,7 +161,7 @@ In your tempalte folder, you will find a Data and a Code folder. In order to kee
 
 <!-- The following is a code chunk. It must have its own unique name (after the r), or no name. After the comma follows commands for R which are self-explanatory. By default, the code and messages will not be printed in your pdf, just the output: -->
 
-```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
+```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6,dev = 'png'}
 
   # This is just a random plot to show you a plot. This is done if the getwd() does not point to your Template's directory.
   # Set WD below to your project's working directory.
@@ -182,7 +182,7 @@ g
 
 To make your graphs look extra nice in latex world, you could use Tikz device. Replace dev - 'png' with 'tikz' in the chunk below. Notice this makes the build time longer and produces extra tex files - so if you are comfortable with this, set your device to Tikz and try it out:
 
-```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png', eval = F}
 
 ExampleData <- read_rds( "data/Example_data.rds")
 
@@ -310,7 +310,7 @@ knitr::include_graphics("YourFigureLocation/Logo.png")
 Tables can be included as follows. Use the _xtable_ (or kable) package for tables. Table placement = H implies Latex tries to place the table Here, and not on a new page (there are, however, very many ways to skin this cat. Luckily there are many forums online!).
 
 
-```{r ShortTable, results = 'asis'}
+```{r ShortTable, results = 'asis', eval = F}
 
 library(xtable)
 data <- mtcars[1:5,] %>% tibble::as_tibble()
@@ -333,7 +333,7 @@ Including tables that span across pages, use the following (note that I add belo
 
 Use the following default settings to build your own possibly long tables. Note that the following will fit on one page if it can, but cleanly spreads over multiple pages:
 
-```{r LongTable, results = 'asis'}
+```{r LongTable, results = 'asis', eval = F}
 
 library(xtable)
 
@@ -380,7 +380,7 @@ If you are eager to use huxtable, comment out the Huxtable table in the Rmd temp
 
 Note that I do not include this in the ordinary template, as some latex users have complained it breaks when they build their Rmds (especially those using tidytex - I don't have this problem as I have the full Miktex installed on mine). Up to you, but I strongly recommend installing the package manually and using huxtable. To make this work, uncomment the _Adding additional latex packages_ part in yaml at the top of the Rmd file. Then comment out the huxtable example in the template below this line. Reknit, and enjoy.
 
-```{r, results = 'asis'}
+```{r, results = 'asis', eval = F}
 
 if(!require(huxtable)) install.packages(huxtable)
 library(huxtable)
