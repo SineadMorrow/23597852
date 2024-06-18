@@ -47,3 +47,12 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Ensuring that history files and data are not committed to github.
+.Rproj.user
+.Rproj.user/
+.Rproj
+.Rhistory
+.RData
+.Ruserdata
+*data/
