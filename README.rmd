@@ -1,0 +1,104 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+# Purpose
+
+The purpose of this README is to provide an overview to the answers for my Data Science Methods for Economics and Finance 871 Practical Exam. 
+
+Each question is self-contained within its own folder, which is able to function on a standalone basis. The present README (the root's README) collates all individual Question folders, offering a detailed overview of what each question entails and how it has been addressed. 
+
+The aim of this system is to ensure that I have  maintained a clear and systematic presentation of my answers, making it easier to understand and review the solutions provided.
+
+Note: I have unzipped the data files and placed them in their respective question folders.
+
+## Code used to get started
+
+I used the following code to setup the root folder and the individual Question (1-5) folders. 
+
+
+```{r, eval = FALSE}
+fmxdat::make_project(Open = T)
+
+CHOSEN_LOCATION <- "C:/Users/Sinead Morrow/Documents/DatSci/23597852/"
+Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}"), template_name = "Question1")
+Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}"), template_name = "Question2")
+Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}"), template_name = "Question3")
+Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}"), template_name = "Question4")
+Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}"), template_name = "Question5")
+```
+
+
+## Code Used for Figures and Tables
+
+The following steps outline the code and procedures used to build the Texevier PDF document, including the generation of Figures and Tables. 
+
+
+```{r}
+rm(list=ls()) # Clear the workspace to improve the codes readability
+gc() # Perform garbage collection to prompt R to return memory to operation system, this will automatically free up memory space allocated to objects which are no longer needed. 
+
+# Load the necessary packages using pacman:
+library(pacman)
+p_load(tidyverse, lubridate)
+
+# Source all functions from the code directories for each question:
+list.files('Question1/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+list.files('Question2/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+list.files('Question3/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+list.files('Question4/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+list.files('Question5/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+```
+
+# Question 1: Baby Names
+
+## Data 
+
+### Loading the data:
+
+```{r}
+
+```
+
+
+# Question 2: Music Taste
+
+## Data 
+
+### Loading the data:
+
+```{r}
+
+```
+
+# Question 3: Russia - Ukraine Conflict
+
+## Data 
+
+### Loading the data:
+
+```{r}
+
+```
+
+# Question 4: Olympics
+
+## Data 
+
+### Loading the data:
+
+```{r}
+
+```
+
+# Question 5: SQL Queries 
+
+## Data 
+
+### Loading the data:
+
+```{r}
+
+```
