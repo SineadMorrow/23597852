@@ -144,6 +144,69 @@ subset_summer <- distinct(subset_summer)
 
 ```
 
+```{r}
+subset_winter <- data.frame(
+  Year = Winter$Year,
+  City = Winter$City,
+  Sport = Winter$Sport,
+  Discipline = Winter$Discipline,
+  Country = Winter$Country,
+  Gender = Winter$Gender,
+  Event = Winter$Event,
+  Medal = Winter$Medal
+)
+# Identify all duplicated rows to create an event type, true is an individual event and false is a team event
+subset_winter <- subset_winter %>%
+  mutate(Event_Type = duplicated(subset_winter) | duplicated(subset_winter, fromLast = TRUE))
+
+# Convert logical values to binary (1 for TRUE, 0 for FALSE)
+subset_winter <- subset_winter %>%
+  mutate(Event_Type = as.integer(Event_Type))
+
+# Identify all duplicated rows
+subset_winter <- distinct(subset_winter)
+head(subset_winter)
+```
+
+```{r}
+# Adding summer and winter indicators
+
+subset_winter$season <- rep("winter",nrow(subset_winter))
+subset_summer$season <- rep("summer",nrow(subset_summer))
+
+head(subset_winter)
+head(subset_summer)
+
+merged_olympics <- bind_rows(subset_winter,subset_summer) %>% arrange(Year)
+```
+```{r}
+GDP <-  GDP %>% 
+    drop_na() %>% 
+    select(-Country) %>% 
+    rename(Country = Code)
+```
+
+
+```{r}
+olympics_df <- 
+    left_join(
+        merged_olympics,
+        GDP,
+        by = "Country"
+    ) %>%  arrange(Year)
+```
+
+
+```{r}
+olympics_df <- olympics_df %>% 
+    drop_na()
+```
+
+```{r}
+
+```
+
+
 TIP: the data shows medals per person,and some events (like hockey) show multiple winners (whole team) while the country receives only one medal. Be creative in your code and analysis and account for this as far as possible.
 
 So what I could do is make a column that says its a team sport, then add the country and the medal? This could work I crack on it now.
