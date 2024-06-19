@@ -108,103 +108,20 @@ if(!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
 
 # Source all functions contained in question 1's code file
-list.files('Question4/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
-
-```
-
-### Loading in the data:
-
-```{r, warning = FALSE, echo = FALSE}
-Summer <- read_rds("data/olympics/summer.rds")
-Winter <- read_rds("data/olympics/winter.rds")
-GDP <- read_rds("data/olympics/GDP.rds")
-```
-
-```{r}
-subset_summer <- data.frame(
-  Year = Summer$Year,
-  City = Summer$City,
-  Sport = Summer$Sport,
-  Discipline = Summer$Discipline,
-  Country = Summer$Country,
-  Gender = Summer$Gender,
-  Event = Summer$Event,
-  Medal = Summer$Medal
-)
-# Identify all duplicated rows to create an event type, true is an individual event and false is a team event
-subset_summer <- subset_summer %>%
-  mutate(Event_Type = duplicated(subset_summer) | duplicated(subset_summer, fromLast = TRUE))
-
-# Convert logical values to binary (1 for TRUE, 0 for FALSE)
-subset_summer <- subset_summer %>%
-  mutate(Event_Type = as.integer(Event_Type))
-
-# Identify all duplicated rows
-subset_summer <- distinct(subset_summer)
-
-```
-
-```{r}
-subset_winter <- data.frame(
-  Year = Winter$Year,
-  City = Winter$City,
-  Sport = Winter$Sport,
-  Discipline = Winter$Discipline,
-  Country = Winter$Country,
-  Gender = Winter$Gender,
-  Event = Winter$Event,
-  Medal = Winter$Medal
-)
-# Identify all duplicated rows to create an event type, true is an individual event and false is a team event
-subset_winter <- subset_winter %>%
-  mutate(Event_Type = duplicated(subset_winter) | duplicated(subset_winter, fromLast = TRUE))
-
-# Convert logical values to binary (1 for TRUE, 0 for FALSE)
-subset_winter <- subset_winter %>%
-  mutate(Event_Type = as.integer(Event_Type))
-
-# Identify all duplicated rows
-subset_winter <- distinct(subset_winter)
-head(subset_winter)
-```
-
-```{r}
-# Adding summer and winter indicators
-
-subset_winter$season <- rep("winter",nrow(subset_winter))
-subset_summer$season <- rep("summer",nrow(subset_summer))
-
-head(subset_winter)
-head(subset_summer)
-
-merged_olympics <- bind_rows(subset_winter,subset_summer) %>% arrange(Year)
-```
-```{r}
-GDP <-  GDP %>% 
-    drop_na() %>% 
-    select(-Country) %>% 
-    rename(Country = Code)
+list.files('code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
 ```
 
 
 ```{r}
-olympics_df <- 
-    left_join(
-        merged_olympics,
-        GDP,
-        by = "Country"
-    ) %>%  arrange(Year)
-```
-
-
-```{r}
-olympics_df <- olympics_df %>% 
-    drop_na()
+Datroot <- "Data/olympics"
+df <- Data_Prep(Datroot)
 ```
 
 ```{r}
-
+olympics_df <- Data_Merge(Data = df)
 ```
+
+
 
 
 TIP: the data shows medals per person,and some events (like hockey) show multiple winners (whole team) while the country receives only one medal. Be creative in your code and analysis and account for this as far as possible.
