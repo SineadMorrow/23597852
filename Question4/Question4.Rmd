@@ -3,7 +3,7 @@
 # Remove comments and add values where applicable.
 # The descriptions below should be self-explanatory
 
-title: "Helping You Write Academic Papers in R using Texevier"
+title: "Medal Metrics: "
 #subtitle: "This will appear as Right Header"
 
 documentclass: "elsarticle"
@@ -25,23 +25,23 @@ Thesis_FP: FALSE
 # --------- Front Page
 # Comment: ----- Follow this pattern for up to 5 authors
 AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
-Author1: "Jane Doe^[__Contributions:__  \\newline _The authors would like to thank no institution for money donated to this project. Thank you sincerely._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
-Ref1: "Some Institution, Cape Town, South Africa" # First Author's Affiliation
-Email1: "nfkatzke\\@gmail.com" # First Author's Email address
+Author1: "Sinead Morrow^[__Contributions:__  \\newline _The authors would like to thank no institution for money donated to this project. Thank you sincerely._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Stellenbosch University, Stellenbosch, South Africa" # First Author's Affiliation
+Email1: "23597852\\@sun.ac.za" # First Author's Email address
 
-Author2: "John Smith"
-Ref2: "Some other Institution, Cape Town, South Africa"
-Email2: "John\\@gmail.com"
-CommonAffiliation_12: TRUE # If Author 1 and 2 have a common affiliation. Works with _13, _23, etc.
+#Author2: "John Smith"
+#Ref2: "Some other Institution, Cape Town, South Africa"
+#Email2: "John\\@gmail.com"
+#CommonAffiliation_12: TRUE # If Author 1 and 2 have a common affiliation. Works with _13, _23, etc.
 
-Author3: "John Doe"
-Email3: "Joe\\@gmail.com"
+#Author3: "John Doe"
+#Email3: "Joe\\@gmail.com"
 
 CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
 
 # Comment out below to remove both. JEL Codes only given if keywords also given.
-keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
-JELCodes: "L250 \\sep L100"
+#keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
 
 # ----- Manage headers and footers:
 #BottomLFooter: $Title$
@@ -100,21 +100,85 @@ abstract: |
 <!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
 
 ```{r setup, include=FALSE}
+rm(list=ls()) # starting by ensuring the environment is clean
+# Initial setup 
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
-# Note: Include = FALSE implies the code is executed, but not printed in your pdf.
-# warning and message = FALSE implies ugly messages and warnings are removed from your pdf.
-# These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
 
-# Lets load in example data, and see how this can be stored and later called from your 'data' folder.
 if(!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
-Example_data <- Texevier::Ex_Dat
 
-# Notice that as you are working in a .Rproj file (I am assuming you are) - the relative paths of your directories start at your specified root.
-# This means that when working in a .Rproj file, you never need to use getwd() - it is assumed as your base root automatically.
-write_rds(Example_data, path = "data/Example_data.rds")
+# Source all functions contained in question 1's code file
+list.files('Question4/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
 
 ```
+
+### Loading in the data: 
+
+
+```{r, warning = FALSE, echo = FALSE}
+Summer <- read_rds("data/olympics/summer.rds")
+Winter <- read_rds("data/olympics/winter.rds")
+GDP <- read_rds("data/olympics/GDP.rds")
+```
+
+
+```{r}
+subset_summer <-  data.frame(Summer$Year,Summer$City,Summer$Sport, Summer$Discipline, Summer$Country, Summer$Gender, Summer$Event, Summer$Medal)
+duplicated(subset_summer)
+```
+
+
+```{r}
+#Labeling each entry whether it is individual or team event  
+dataset_test <- Summer %>% 
+    group_by(Year) %>% mutate(type = ifelse(str_detect(Event, "Team"),
+                                                 "Team", "Individual"))
+#Classifying medals based on team or individual events
+dataset_test_medals <- dataset_test %>% filter(!is.na(Medal)) %>% group_by(type) %>%
+  summarise(Medals = n())
+
+print(dataset_test_medals)
+
+```
+```{r}
+classify_event_type <- function(df) {
+  df <- df %>%
+    group_by(Country, Year) %>%
+    mutate(
+      type = ifelse(
+        all(Medal == "Gold") | all(Medal == "Silver") | all(Medal == "Bronze"),
+        "Team", "Individual"
+      )
+    ) %>%
+    ungroup()
+  
+  return(df)
+}
+
+# Apply the function to classify events
+dataset_test <- Summer %>%
+  group_by(Year) %>%
+  mutate(
+    type = ifelse(str_detect(Event, "Team"), "Team", "Individual")
+  ) %>%
+  ungroup()
+
+# Classifying medals based on team or individual events
+dataset_test_medals <- dataset_test %>%
+  filter(!is.na(Medal)) %>%
+  group_by(type) %>%
+  summarise(Medals = n())
+
+# Print the summarized medal counts
+print("Medal Counts Summary:")
+print(dataset_test_medals)
+```
+
+
+TIP: the data shows medals per person,and some events (like hockey) show multiple winners (whole team) while the country receives only one medal. 
+Be creative in your code and analysis and account for this as far as possible.
+
+So what I could do is make a column that says its a team sport, then add the country and the medal? This could work I crack on it now.
 
 
 <!-- ############################## -->
@@ -141,7 +205,7 @@ In your tempalte folder, you will find a Data and a Code folder. In order to kee
 
 <!-- The following is a code chunk. It must have its own unique name (after the r), or no name. After the comma follows commands for R which are self-explanatory. By default, the code and messages will not be printed in your pdf, just the output: -->
 
-```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
+```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6, dev = 'png', eval = F}
 
   # This is just a random plot to show you a plot. This is done if the getwd() does not point to your Template's directory.
   # Set WD below to your project's working directory.
@@ -161,8 +225,8 @@ g
 ```
 
 To make your graphs look extra nice in latex world, you could use Tikz device. Replace dev - 'png' with 'tikz' in the chunk below. Notice this makes the build time longer and produces extra tex files - so if you are comfortable with this, set your device to Tikz and try it out:
-
-```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
+, 
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png', eval = F}
 
 ExampleData <- read_rds( "data/Example_data.rds")
 
@@ -290,7 +354,7 @@ knitr::include_graphics("YourFigureLocation/Logo.png")
 Tables can be included as follows. Use the _xtable_ (or kable) package for tables. Table placement = H implies Latex tries to place the table Here, and not on a new page (there are, however, very many ways to skin this cat. Luckily there are many forums online!).
 
 
-```{r ShortTable, results = 'asis'}
+```{r ShortTable, results = 'asis', eval = F}
 
 library(xtable)
 data <- mtcars[1:5,] %>% tibble::as_tibble()
@@ -313,7 +377,7 @@ Including tables that span across pages, use the following (note that I add belo
 
 Use the following default settings to build your own possibly long tables. Note that the following will fit on one page if it can, but cleanly spreads over multiple pages:
 
-```{r LongTable, results = 'asis'}
+```{r LongTable, results = 'asis', eval = F}
 
 library(xtable)
 
@@ -360,7 +424,7 @@ If you are eager to use huxtable, comment out the Huxtable table in the Rmd temp
 
 Note that I do not include this in the ordinary template, as some latex users have complained it breaks when they build their Rmds (especially those using tidytex - I don't have this problem as I have the full Miktex installed on mine). Up to you, but I strongly recommend installing the package manually and using huxtable. To make this work, uncomment the _Adding additional latex packages_ part in yaml at the top of the Rmd file. Then comment out the huxtable example in the template below this line. Reknit, and enjoy.
 
-```{r, results = 'asis'}
+```{r, results = 'asis', eval = F}
 
 if(!require(huxtable)) install.packages(huxtable)
 library(huxtable)
@@ -421,4 +485,3 @@ I hope you find this template useful. Remember, stackoverflow is your friend - u
 Some appendix information here
 
 ## Appendix B {-}
-

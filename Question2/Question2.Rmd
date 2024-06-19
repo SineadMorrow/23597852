@@ -181,9 +181,18 @@ I will rename the variable album_name to album in the coldplay dataset
 coldplay <- 
     coldplay %>% rename(album = album_name)
 ```
-
+```{r}
+head(coldplay,5)
+head(billboard_100,5)
+head(spotify,5) # year is double not date
+head(metallica,5)
+```
+Billboard from 1958 and spotify from 1900
+coldplay starts at 2000
+metallica starts at 1983
 I think there is something that I can do with the date columns here as well..
 
+Maybe try add a column for each c and m to show whether live, demo, audition, remix, etc. would need to get a list of those..
 
 ### NOTE: population data not required here 
 

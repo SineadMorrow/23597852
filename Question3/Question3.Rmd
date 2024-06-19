@@ -3,7 +3,7 @@
 # Remove comments and add values where applicable.
 # The descriptions below should be self-explanatory
 
-title: "Helping You Write Academic Papers in R using Texevier"
+title: "With No Love From Russia, Is The EU Stepping Up?"
 #subtitle: "This will appear as Right Header"
 
 documentclass: "elsarticle"
@@ -25,23 +25,23 @@ Thesis_FP: FALSE
 # --------- Front Page
 # Comment: ----- Follow this pattern for up to 5 authors
 AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
-Author1: "Jane Doe^[__Contributions:__  \\newline _The authors would like to thank no institution for money donated to this project. Thank you sincerely._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
-Ref1: "Some Institution, Cape Town, South Africa" # First Author's Affiliation
-Email1: "nfkatzke\\@gmail.com" # First Author's Email address
+Author1: "Sinead Morrow^[__Contributions:__  \\newline _The authors would like to thank no institution for money donated to this project. Thank you sincerely._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Stellenbosch University, Stellenbosch, South Africa" # First Author's Affiliation
+Email1: "23597852\\@sun.ac.za" # First Author's Email address
 
-Author2: "John Smith"
-Ref2: "Some other Institution, Cape Town, South Africa"
-Email2: "John\\@gmail.com"
-CommonAffiliation_12: TRUE # If Author 1 and 2 have a common affiliation. Works with _13, _23, etc.
+#Author2: "John Smith"
+#Ref2: "Some other Institution, Cape Town, South Africa"
+#Email2: "John\\@gmail.com"
+#CommonAffiliation_12: TRUE # If Author 1 and 2 have a common affiliation. Works with _13, _23, etc.
 
-Author3: "John Doe"
-Email3: "Joe\\@gmail.com"
+#Author3: "John Doe"
+#Email3: "Joe\\@gmail.com"
 
 CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
 
 # Comment out below to remove both. JEL Codes only given if keywords also given.
-keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
-JELCodes: "L250 \\sep L100"
+#keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
 
 # ----- Manage headers and footers:
 #BottomLFooter: $Title$
@@ -100,22 +100,126 @@ abstract: |
 <!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
 
 ```{r setup, include=FALSE}
+rm(list=ls()) # starting by ensuring the environment is clean
+# Initial setup 
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
-# Note: Include = FALSE implies the code is executed, but not printed in your pdf.
-# warning and message = FALSE implies ugly messages and warnings are removed from your pdf.
-# These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
 
-# Lets load in example data, and see how this can be stored and later called from your 'data' folder.
 if(!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
-Example_data <- Texevier::Ex_Dat
 
-# Notice that as you are working in a .Rproj file (I am assuming you are) - the relative paths of your directories start at your specified root.
-# This means that when working in a .Rproj file, you never need to use getwd() - it is assumed as your base root automatically.
-write_rds(Example_data, path = "data/Example_data.rds")
+# Source all functions contained in question 1's code file
+list.files('Question3/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
 
 ```
 
+### Loading in the data: 
+
+duration: Duration in seconds
+release_date: Album release date
+album_name: Name of CD / album
+explicit: Whether song contains explicit lyrics or not.
+popularity: popularity score (out of 100)
+acousticness: A confidence measure from 0.0 to 1.0 of whether the track is acoustic; acoustic means 'without electrical amplification' – an acoustic guitar versus an electric guitar, for example.
+danceability: Describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.
+energy: song energy is the sense of forward motion in music, whatever keeps the listener engaged and listening. In loud music, musical energy is easy to identify. We notice the energy more as the drums get busier and play louder, and as the singer sings higher.
+instrumentalness:  Instrumentalness predicts whether a track contains vocals. Instrumentalness is measured on a scale of 0 (likely contains vocal content) to 100 (likely contains no vocal content). Songs with higher instrumentalness are less likely to have vocals
+liveness: Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live. A value above 0.8 provides strong likelihood that the track is live.
+loudness: LUFS metering is the most accurate way of measuring perceived loudness because it resembles human hearing more closely than other meters. 
+speechiness: Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words.
+tempo: In simple terms, tempo is how fast or slow a piece of music is performed, while rhythm is the placement of sounds in time, in a regular and repeated pattern. Tempo generally is measured as the number of beats per minute, where the beat is the basic measure of time in music.
+valence: Describes the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry)
+
+
+
+
+
+```{r, warning = FALSE, echo = FALSE}
+alloc <- read_csv("data/Ukraine_Aid/Financial Allocations.csv")
+commit <- read_csv("data/Ukraine_Aid/Financial Commitments.csv")
+```
+
+```{r}
+
+```
+This should not take too long.. 
+
+## CURRENT POA
+Key Insights and Data Points:
+
+Total Financial Commitment vs. Allocation:
+        Compare the total amount of financial commitments made by EU countries with the actual financial allocations (spending).
+        Highlight discrepancies between promised aid and actual aid delivered.
+
+Top Contributing Countries:
+        Identify and list the top five EU countries based on both financial commitment and allocation.
+        Highlight any significant differences between commitment and allocation within these top contributors.
+
+Aid Over Time:
+        Display how financial allocations have changed over time since the onset of the war.
+        Show trends and highlight any periods of increased or decreased spending.
+
+Per Capita Contributions:
+        Analyze financial allocation and commitment per capita to show which countries are contributing the most relative to their population size.
+
+Comparison with Non-EU Countries:
+        If available, include a brief comparison of EU aid with significant non-EU contributors like the United States or Canada.-
+Plot Ideas:
+
+- Bar Charts:
+        Top Contributors: Bar chart showing the top five countries by financial allocation and commitment.
+        Per Capita Contributions: Bar chart displaying per capita financial allocation of different EU countries.
+
+- Line Graphs:
+        Aid Over Time: Line graph showing the trend of financial allocations over time, with key events marked.
+        Commitment vs. Allocation Over Time: Line graph comparing the trends of financial commitments vs. actual allocations.
+
+- Pie Charts:
+        Allocation Distribution: Pie chart showing the distribution of financial allocations across different countries.
+        Commitment Distribution: Pie chart showing the distribution of financial commitments across different countries.
+
+- Heat Maps:
+        Geographical Distribution: Heat map of Europe highlighting the intensity of financial allocation and commitment by country.
+
+Stats to Highlight:
+
+  -  Total Amounts:
+        Total financial commitments and total allocations by the EU.
+        Percentage of commitments that have been allocated.
+
+   - Top Countries:
+        Top three countries in terms of absolute financial allocation and commitment.
+        Top three countries in terms of per capita allocation and commitment.
+
+  -  Trends:
+        Significant increases or decreases in aid over specific periods.
+        Correlation between key events in the war and changes in financial allocation.
+
+Summary for On-Air Interpretation:
+
+   - Overview:
+        Provide an overview of the EU's total financial commitment and allocation to Ukraine.
+        Emphasize the gap between commitments and actual allocations.
+
+   - Top Contributors:
+        Highlight the top contributing countries and their relative generosity.
+        Discuss any notable gaps between promised aid and delivered aid.
+
+ -   Trends and Changes:
+        Discuss how financial support has evolved over time and any significant fluctuations.
+        Relate these trends to key events in the war for context.
+
+  -  Per Capita Insights:
+        Explain which countries are contributing the most on a per capita basis, showcasing a fairer measure of generosity relative to population size.
+
+   - Conclusion:
+        Summarize whether the EU's financial support has been sufficient based on the data.
+        Offer insights into areas where EU support could improve or where it has been particularly strong.
+
+
+
+
+
+### NOTE: population data not required here 
 
 <!-- ############################## -->
 <!-- # Start Writing here: -->
@@ -141,7 +245,7 @@ In your tempalte folder, you will find a Data and a Code folder. In order to kee
 
 <!-- The following is a code chunk. It must have its own unique name (after the r), or no name. After the comma follows commands for R which are self-explanatory. By default, the code and messages will not be printed in your pdf, just the output: -->
 
-```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
+```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6, dev = 'png', eval = F}
 
   # This is just a random plot to show you a plot. This is done if the getwd() does not point to your Template's directory.
   # Set WD below to your project's working directory.
@@ -161,8 +265,8 @@ g
 ```
 
 To make your graphs look extra nice in latex world, you could use Tikz device. Replace dev - 'png' with 'tikz' in the chunk below. Notice this makes the build time longer and produces extra tex files - so if you are comfortable with this, set your device to Tikz and try it out:
-
-```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
+, 
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png', eval = F}
 
 ExampleData <- read_rds( "data/Example_data.rds")
 
@@ -290,7 +394,7 @@ knitr::include_graphics("YourFigureLocation/Logo.png")
 Tables can be included as follows. Use the _xtable_ (or kable) package for tables. Table placement = H implies Latex tries to place the table Here, and not on a new page (there are, however, very many ways to skin this cat. Luckily there are many forums online!).
 
 
-```{r ShortTable, results = 'asis'}
+```{r ShortTable, results = 'asis', eval = F}
 
 library(xtable)
 data <- mtcars[1:5,] %>% tibble::as_tibble()
@@ -313,7 +417,7 @@ Including tables that span across pages, use the following (note that I add belo
 
 Use the following default settings to build your own possibly long tables. Note that the following will fit on one page if it can, but cleanly spreads over multiple pages:
 
-```{r LongTable, results = 'asis'}
+```{r LongTable, results = 'asis', eval = F}
 
 library(xtable)
 
@@ -360,7 +464,7 @@ If you are eager to use huxtable, comment out the Huxtable table in the Rmd temp
 
 Note that I do not include this in the ordinary template, as some latex users have complained it breaks when they build their Rmds (especially those using tidytex - I don't have this problem as I have the full Miktex installed on mine). Up to you, but I strongly recommend installing the package manually and using huxtable. To make this work, uncomment the _Adding additional latex packages_ part in yaml at the top of the Rmd file. Then comment out the huxtable example in the template below this line. Reknit, and enjoy.
 
-```{r, results = 'asis'}
+```{r, results = 'asis', eval = F}
 
 if(!require(huxtable)) install.packages(huxtable)
 library(huxtable)
@@ -421,4 +525,3 @@ I hope you find this template useful. Remember, stackoverflow is your friend - u
 Some appendix information here
 
 ## Appendix B {-}
-
