@@ -108,31 +108,29 @@ if(!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
 
 # Source all functions contained in question 1's code file
-list.files('Question1/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+list.files('code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
 
 ```
 
-### Loading in the data: 
+
+### Loading in the data using Data_Prep function in code file: 
+
+```{r, warning= FALSE}
+Datroot <- "Data/US_Baby_names"
+df <- Data_Prep(Datroot)
+attach(df)
+```
+
+
+### Merging HBO_Credits and HBO_Titles 
 
 ```{r}
-Baby_Names <- read_rds("data/US_Baby_names/Baby_Names_By_US_State.rds")
-charts <- read_rds("data/US_Baby_names/charts.rds")
-HBO_Titles <- read_rds("data/US_Baby_names/HBO_titles.rds")
-HBO_Credits <- read_rds("data/US_Baby_names/HBO_credits.rds")
+HBO <- HBO_Merge(Data)
 ```
 ```{r}
-# trying to merge some of the datasets to make my life easier:
-library(dplyr)
-HBO <- 
-    left_join(
-    HBO_Credits,
-    HBO_Titles,
-    by = "id"
-    
-) %>% arrange(release_year)
-
-head(HBO,10)
-
+# Dropping if the person's role is director
+    HBO$role <- HBO$role %>%
+      select(!contains("ACTOR")) 
 ```
 
 ### NOTE: population data not required here 
