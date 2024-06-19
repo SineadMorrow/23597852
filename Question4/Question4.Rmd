@@ -112,8 +112,7 @@ list.files('Question4/code/', full.names = T, recursive = T) %>% as.list() %>% w
 
 ```
 
-### Loading in the data: 
-
+### Loading in the data:
 
 ```{r, warning = FALSE, echo = FALSE}
 Summer <- read_rds("data/olympics/summer.rds")
@@ -121,81 +120,51 @@ Winter <- read_rds("data/olympics/winter.rds")
 GDP <- read_rds("data/olympics/GDP.rds")
 ```
 
-
 ```{r}
-subset_summer <-  data.frame(Summer$Year,Summer$City,Summer$Sport, Summer$Discipline, Summer$Country, Summer$Gender, Summer$Event, Summer$Medal)
-duplicated(subset_summer)
+subset_summer <- data.frame(
+  Year = Summer$Year,
+  City = Summer$City,
+  Sport = Summer$Sport,
+  Discipline = Summer$Discipline,
+  Country = Summer$Country,
+  Gender = Summer$Gender,
+  Event = Summer$Event,
+  Medal = Summer$Medal
+)
+# Identify all duplicated rows to create an event type, true is an individual event and false is a team event
+subset_summer <- subset_summer %>%
+  mutate(Event_Type = duplicated(subset_summer) | duplicated(subset_summer, fromLast = TRUE))
+
+# Convert logical values to binary (1 for TRUE, 0 for FALSE)
+subset_summer <- subset_summer %>%
+  mutate(Event_Type = as.integer(Event_Type))
+
+# Identify all duplicated rows
+subset_summer <- distinct(subset_summer)
+
 ```
 
-
-```{r}
-#Labeling each entry whether it is individual or team event  
-dataset_test <- Summer %>% 
-    group_by(Year) %>% mutate(type = ifelse(str_detect(Event, "Team"),
-                                                 "Team", "Individual"))
-#Classifying medals based on team or individual events
-dataset_test_medals <- dataset_test %>% filter(!is.na(Medal)) %>% group_by(type) %>%
-  summarise(Medals = n())
-
-print(dataset_test_medals)
-
-```
-```{r}
-classify_event_type <- function(df) {
-  df <- df %>%
-    group_by(Country, Year) %>%
-    mutate(
-      type = ifelse(
-        all(Medal == "Gold") | all(Medal == "Silver") | all(Medal == "Bronze"),
-        "Team", "Individual"
-      )
-    ) %>%
-    ungroup()
-  
-  return(df)
-}
-
-# Apply the function to classify events
-dataset_test <- Summer %>%
-  group_by(Year) %>%
-  mutate(
-    type = ifelse(str_detect(Event, "Team"), "Team", "Individual")
-  ) %>%
-  ungroup()
-
-# Classifying medals based on team or individual events
-dataset_test_medals <- dataset_test %>%
-  filter(!is.na(Medal)) %>%
-  group_by(type) %>%
-  summarise(Medals = n())
-
-# Print the summarized medal counts
-print("Medal Counts Summary:")
-print(dataset_test_medals)
-```
-
-
-TIP: the data shows medals per person,and some events (like hockey) show multiple winners (whole team) while the country receives only one medal. 
-Be creative in your code and analysis and account for this as far as possible.
+TIP: the data shows medals per person,and some events (like hockey) show multiple winners (whole team) while the country receives only one medal. Be creative in your code and analysis and account for this as far as possible.
 
 So what I could do is make a column that says its a team sport, then add the country and the medal? This could work I crack on it now.
 
-
 <!-- ############################## -->
+
 <!-- # Start Writing here: -->
+
 <!-- ############################## -->
 
 # Introduction \label{Introduction}
 
-References are to be made as follows: @fama1997[p. 33] and @grinold2000 Such authors could also be referenced in brackets [@grinold2000] and together [@fama1997 \& @grinold2000]. Source the reference code from scholar.google.com by clicking on ``cite'' below article name. Then select BibTeX at the bottom of the Cite window, and proceed to copy and paste this code into your ref.bib file, located in the directory's Tex folder. Open this file in Rstudio for ease of management, else open it in your preferred Tex environment. Add and manage your article details here for simplicity - once saved, it will self-adjust in your paper.
+References are to be made as follows: @fama1997 [p. 33] and @grinold2000 Such authors could also be referenced in brackets [@grinold2000] and together [@fama1997 & @grinold2000]. Source the reference code from scholar.google.com by clicking on \`\`cite'' below article name. Then select BibTeX at the bottom of the Cite window, and proceed to copy and paste this code into your ref.bib file, located in the directory's Tex folder. Open this file in Rstudio for ease of management, else open it in your preferred Tex environment. Add and manage your article details here for simplicity - once saved, it will self-adjust in your paper.
 
 > I suggest renaming the top line after \@article, as done in the template ref.bib file, to something more intuitive for you to remember. Do not change the rest of the code. Also, be mindful of the fact that bib references from google scholar may at times be incorrect. Reference Latex forums for correct bibtex notation.
 
-To reference a section, you have to set a label using ``\\label'' in R, and then reference it in-text as e.g. referencing a later section, Section \ref{Meth}.
+To reference a section, you have to set a label using \`\`\\label'' in R, and then reference it in-text as e.g. referencing a later section, Section \ref{Meth}.
 
 Writing in Rmarkdown is surprizingly easy - see [this website](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) cheatsheet for a summary on writing Rmd writing tips.
 
-# Data  {-}
+# Data {.unnumbered}
 
 Notice how I used the curly brackets and dash to remove the numbering of the data section.
 
@@ -224,8 +193,8 @@ g
 
 ```
 
-To make your graphs look extra nice in latex world, you could use Tikz device. Replace dev - 'png' with 'tikz' in the chunk below. Notice this makes the build time longer and produces extra tex files - so if you are comfortable with this, set your device to Tikz and try it out:
-, 
+To make your graphs look extra nice in latex world, you could use Tikz device. Replace dev - 'png' with 'tikz' in the chunk below. Notice this makes the build time longer and produces extra tex files - so if you are comfortable with this, set your device to Tikz and try it out: ,
+
 ```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png', eval = F}
 
 ExampleData <- read_rds( "data/Example_data.rds")
@@ -254,7 +223,7 @@ g
 
 ```
 
-To reference the plot above, add a ``\\label'' after the caption in the chunk heading, as done above. Then reference the plot as such: As can be seen, Figures \ref{Figure1}  and \ref{Figure2} are excellent, with Figure \ref{Figure2} being particularly aesthetically pleasing due to its device setting of Tikz. The nice thing now is that it correctly numbers all your figures (and sections or tables) and will update if it moves. The links are also dynamic.
+To reference the plot above, add a \`\`\\label'' after the caption in the chunk heading, as done above. Then reference the plot as such: As can be seen, Figures \ref{Figure1} and \ref{Figure2} are excellent, with Figure \ref{Figure2} being particularly aesthetically pleasing due to its device setting of Tikz. The nice thing now is that it correctly numbers all your figures (and sections or tables) and will update if it moves. The links are also dynamic.
 
 I very strongly suggest using ggplot2 (ideally in combination with dplyr) using the ggtheme package to change the themes of your figures.
 
@@ -264,77 +233,100 @@ Also note the information that I have placed above the chunks in the code chunks
 
 You can also very easily split a page using built-in Pandoc formatting. I comment this out in the code (as this has caused issues building the pdf for some users - which I presume to be a Pandoc issue), but you are welcome to try it out yourself by commenting out the following section in your Rmd file.
 
-
 <!-- :::::: {.columns data-latex="[T]"} -->
+
 <!-- ::: {.column data-latex="{0.7\textwidth}"} -->
+
 <!-- ```{r, echo=FALSE, fig.width=4, fig.height=4} -->
+
 <!-- par(mar = c(4, 4, .2, .1)) -->
+
 <!-- plot(cars, pch = 19) -->
+
 <!-- ``` -->
+
 <!-- ::: -->
+
 <!-- ::: {.column data-latex="{0.05\textwidth}"} -->
+
 <!-- \ -->
+
 <!-- ::: -->
+
 <!-- ::: {.column data-latex="{0.2\textwidth}"} -->
+
 <!-- \scriptsize -->
 
 <!-- ## Data {-} -->
+
 <!-- The figure on the left-hand side shows the `cars` data. -->
 
 <!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do -->
+
 <!-- eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut -->
+
 <!-- enim ad minim veniam, quis nostrud exercitation ullamco laboris -->
+
 <!-- nisi ut aliquip ex ea commodo consequat. -->
+
 <!-- ::: -->
+
 <!-- :::::: -->
 
-
-
-#  Methodology \label{Meth}
+# Methodology \label{Meth}
 
 ## Subsection
-Ideally do not overuse subsections. It equates to bad writing.^[This is an example of a footnote by the way. Something that should also not be overused.]
+
+Ideally do not overuse subsections. It equates to bad writing.[^1]
+
+[^1]: This is an example of a footnote by the way. Something that should also not be overused.
 
 ## Math section
 
 Equations should be written as such:
 
+```{=tex}
 \begin{align}
 \beta = \sum_{i = 1}^{\infty}\frac{\alpha^2}{\sigma_{t-1}^2} \label{eq1} \\
 \int_{x = 1}^{\infty}x_{i} = 1 \notag
 \end{align}
-
-If you would like to see the equations as you type in Rmarkdown, use $ symbols instead (see this for yourself by adjusted the equation):
+```
+If you would like to see the equations as you type in Rmarkdown, use \$ symbols instead (see this for yourself by adjusted the equation):
 
 $$
 \beta = \sum_{i = 1}^{\infty}\frac{\alpha^2}{\sigma_{t-1}^2} \\
 \int_{x = 1}^{\infty}x_{i} = 1
 $$
 
-Note the equation above - this should appear in math in Rstudio. Writing nice math requires practice. Note I used a forward slashes to make a space in the equations. I can also align equations using  __\&__, and set to numbering only the first line. Now I will have to type ``begin equation'' which is a native \LaTeX command. Here follows a more complicated equation that you want aligned (using \& sign) and numbered:
+Note the equation above - this should appear in math in Rstudio. Writing nice math requires practice. Note I used a forward slashes to make a space in the equations. I can also align equations using **&**, and set to numbering only the first line. Now I will have to type \`\`begin equation'' which is a native \LaTeX command. Here follows a more complicated equation that you want aligned (using & sign) and numbered:
 
-
+```{=tex}
 \begin{align}
-	y_t &= c + B(L) y_{t-1} + e_t   \label{eq2}    \\ \notag
-	e_t &= H_t^{1/2}  z_t ; \quad z_t \sim  N(0,I_N) \quad \& \quad H_t = D_tR_tD_t \\ \notag
-		D_t^2 &= {\sigma_{1,t}, \dots, \sigma_{N,t}}   \\ \notag
-		\sigma_{i,t}^2 &= \gamma_i+\kappa_{i,t}  v_{i, t-1}^2 +\eta_i  \sigma_{i, t-1}^2, \quad \forall i \\ \notag
-		R_{t, i, j} &= {diag(Q_{t, i, j}}^{-1}) . Q_{t, i, j} . diag(Q_{t, i, j}^{-1})  \\ \notag
-		Q_{t, i, j} &= (1-\alpha-\beta)  \bar{Q} + \alpha  z_t  z_t'  + \beta  Q_{t, i, j} \notag
+    y_t &= c + B(L) y_{t-1} + e_t   \label{eq2}    \\ \notag
+    e_t &= H_t^{1/2}  z_t ; \quad z_t \sim  N(0,I_N) \quad \& \quad H_t = D_tR_tD_t \\ \notag
+        D_t^2 &= {\sigma_{1,t}, \dots, \sigma_{N,t}}   \\ \notag
+        \sigma_{i,t}^2 &= \gamma_i+\kappa_{i,t}  v_{i, t-1}^2 +\eta_i  \sigma_{i, t-1}^2, \quad \forall i \\ \notag
+        R_{t, i, j} &= {diag(Q_{t, i, j}}^{-1}) . Q_{t, i, j} . diag(Q_{t, i, j}^{-1})  \\ \notag
+        Q_{t, i, j} &= (1-\alpha-\beta)  \bar{Q} + \alpha  z_t  z_t'  + \beta  Q_{t, i, j} \notag
 \end{align}
-
-Note that in \ref{eq2} I have aligned the equations by the equal signs. I also want only one tag, and I create spaces using ``quads''.
+```
+Note that in \ref{eq2} I have aligned the equations by the equal signs. I also want only one tag, and I create spaces using \`\`quads''.
 
 See if you can figure out how to do complex math using the two examples provided in \ref{eq1} and \ref{eq2}.
 
 <!-- $$ -->
-<!-- This is a commented out section in the writing part. -->
-<!-- Comments are created by highlighting text, amnd pressing CTL+C -->
-<!-- \\begin{align} -->
-<!-- \\beta = \\alpha^2 -->
-<!-- \end{align} -->
-<!-- $$ -->
 
+<!-- This is a commented out section in the writing part. -->
+
+<!-- Comments are created by highlighting text, amnd pressing CTL+C -->
+
+<!-- \\begin{align} -->
+
+<!-- \\beta = \\alpha^2 -->
+
+<!-- \end{align} -->
+
+<!-- $$ -->
 
 # Including an external plot
 
@@ -348,11 +340,9 @@ knitr::include_graphics("YourFigureLocation/Logo.png")
 
 ```
 
-
 # Results
 
-Tables can be included as follows. Use the _xtable_ (or kable) package for tables. Table placement = H implies Latex tries to place the table Here, and not on a new page (there are, however, very many ways to skin this cat. Luckily there are many forums online!).
-
+Tables can be included as follows. Use the *xtable* (or kable) package for tables. Table placement = H implies Latex tries to place the table Here, and not on a new page (there are, however, very many ways to skin this cat. Luckily there are many forums online!).
 
 ```{r ShortTable, results = 'asis', eval = F}
 
@@ -371,9 +361,9 @@ table <- xtable(data, caption = "Short Table Example \\label{tab1}")
 
 ```
 
-To reference calculations __in text__, _do this:_ From table \ref{tab1} we see the average value of mpg is `r mean(mtcars[1:5,]$mpg)`.
+To reference calculations **in text**, *do this:* From table \ref{tab1} we see the average value of mpg is `r mean(mtcars[1:5,]$mpg)`.
 
-Including tables that span across pages, use the following (note that I add below the table: ``continue on the next page''). This is a neat way of splitting your table across a page.
+Including tables that span across pages, use the following (note that I add below the table: \`\`continue on the next page''). This is a neat way of splitting your table across a page.
 
 Use the following default settings to build your own possibly long tables. Note that the following will fit on one page if it can, but cleanly spreads over multiple pages:
 
@@ -410,7 +400,6 @@ table <- xtable(data, caption = "Long Table Example")
 
 <!-- hfill can be used to create a space, like here between text and table. -->
 
-
 ## Huxtable
 
 Huxtable is a very nice package for making working with tables between Rmarkdown and Tex easier.
@@ -419,10 +408,9 @@ This cost some adjustment to the Tex templates to make it work, but it now works
 
 See documentation for this package [here](https://hughjonesd.github.io/huxtable/huxtable.html). A particularly nice addition of this package is for making the printing of regression results a joy (see [here](https://hughjonesd.github.io/huxtable/huxtable.html#creating-a-regression-table)). Here follows an example:
 
-
 If you are eager to use huxtable, comment out the Huxtable table in the Rmd template, and uncomment the colortbl package in your Rmd's root.
 
-Note that I do not include this in the ordinary template, as some latex users have complained it breaks when they build their Rmds (especially those using tidytex - I don't have this problem as I have the full Miktex installed on mine). Up to you, but I strongly recommend installing the package manually and using huxtable. To make this work, uncomment the _Adding additional latex packages_ part in yaml at the top of the Rmd file. Then comment out the huxtable example in the template below this line. Reknit, and enjoy.
+Note that I do not include this in the ordinary template, as some latex users have complained it breaks when they build their Rmds (especially those using tidytex - I don't have this problem as I have the full Miktex installed on mine). Up to you, but I strongly recommend installing the package manually and using huxtable. To make this work, uncomment the *Adding additional latex packages* part in yaml at the top of the Rmd file. Then comment out the huxtable example in the template below this line. Reknit, and enjoy.
 
 ```{r, results = 'asis', eval = F}
 
@@ -458,30 +446,31 @@ FYI - R also recently introduced the gt package, which is worthwhile exploring t
 
 To add lists, simply using the following notation
 
-* This is really simple
+-   This is really simple
 
-    + Just note the spaces here - writing in R you have to sometimes be pedantic about spaces...
+    -   Just note the spaces here - writing in R you have to sometimes be pedantic about spaces...
 
-* Note that Rmarkdown notation removes the pain of defining \LaTeX environments!
+-   Note that Rmarkdown notation removes the pain of defining \LaTeX environments!
 
 # Conclusion
 
 I hope you find this template useful. Remember, stackoverflow is your friend - use it to find answers to questions. Feel free to write me a mail if you have any questions regarding the use of this package. To cite this package, simply type citation("Texevier") in Rstudio to get the citation for @Texevier (Note that uncited references in your bibtex file will not be included in References).
 
 <!-- Make title of bibliography here: -->
+
 <!-- \newpage -->
 
 \newpage
 
-# References {-}
+# References {.unnumbered}
 
-<div id="refs"></div>
+::: {#refs}
+:::
 
+# Appendix {.unnumbered}
 
-# Appendix {-}
-
-## Appendix A {-}
+## Appendix A {.unnumbered}
 
 Some appendix information here
 
-## Appendix B {-}
+## Appendix B {.unnumbered}
